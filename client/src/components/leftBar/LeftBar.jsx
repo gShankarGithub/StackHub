@@ -14,7 +14,7 @@ import Courses from "../../assets/12.png";
 import Fund from "../../assets/13.png";
 import { useContext } from "react";
 import { AuthContext } from "../../context/authContext";
-import { Link,useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import * as React from "react";
 import Button from "@mui/joy/Button";
@@ -40,8 +40,8 @@ function LeftBar() {
   }, [open]);
 
   const handleFriendClick = (id) => {
-    setOpen(false)
-    navigate(`/profile/${id}`)
+    setOpen(false);
+    navigate(`/profile/${id}`);
   };
 
   return (
@@ -104,8 +104,8 @@ function LeftBar() {
                 <ModalClose
                   variant="outlined"
                   sx={{
-                    top: "calc(-1/4 * var(--IconButton-size))",
-                    right: "calc(-1/4 * var(--IconButton-size))",
+                    top: "50",
+                    right: "120",
                     boxShadow: "0 2px 12px 0 rgba(0 0 0 / 0.2)",
                     borderRadius: "50%",
                     bgcolor: "background.body",
@@ -126,7 +126,10 @@ function LeftBar() {
                   {allUsers ? (
                     allUsers.map((user) => {
                       return (
-                        <div onClick={()=>handleFriendClick(user._id)} className="userImg flex p-2.5 cursor-pointer">
+                        <div
+                          onClick={() => handleFriendClick(user._id)}
+                          className="userImg flex p-2.5 cursor-pointer"
+                        >
                           <img
                             className="w-12 h-12 rounded-full"
                             src={user.profilePicture}
