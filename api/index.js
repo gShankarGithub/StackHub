@@ -15,6 +15,10 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 
 
+// Rate Limit with express-rate-limit
+
+const rateLimit = require("express-rate-limit")
+
 
 dotenv.config();
 
@@ -33,6 +37,14 @@ app.use(cors({
     origin:["http://localhost:3000","http://localhost:4001"]
 }));
 
+// Rate Limit Middleware
+
+const limiter = rateLimit({
+    max:100,
+    windowMs: 60 * 60 * 1000,
+    message: "Too Many Requests from this IP"
+})
+
 
 
 app.use(cookieParser());
@@ -41,7 +53,7 @@ app.use(helmet());
 app.use(morgan("common"));
 
 app.use("/api/users", userRoute)
-app.use("/api/auth", authRoute)
+app.use("/api/auth",limiter, authRoute)
 app.use("/api/posts", postRoute)
 app.use("/api/conversations", conversationRoute)
 app.use("/api/messages", messageRoute)

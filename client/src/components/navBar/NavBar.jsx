@@ -9,10 +9,11 @@ import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import Button from "@mui/material/Button";
 import { Link, useNavigate } from "react-router-dom";
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { DarkModeContext } from "../../context/darkModeContext";
 import { AuthContext } from "../../context/authContext";
 import { makeRequest } from "../../axios";
+import debounce from "lodash.debounce";
 
 export default function NavBar() {
   const [userData, setUserData] = useState("");
@@ -38,13 +39,27 @@ export default function NavBar() {
       .then(({ data }) => setUserData(data))
       .catch((error) => console.log(error));
   }, []);
-  const handleChange = async (e) => {
+
+// Debouncing
+
+  const debouncedSave = useCallback(
+    debounce(async (searchWord,userData) => {
+      const newFilter = await userData.filter((value) => {
+        return value.username.toLowerCase().includes(searchWord.toLowerCase());
+      });
+      newFilter && setFilteredData(newFilter);
+    },1000),
+    []
+  );
+
+  const handleChange = (e) => {
     const searchWord = e.target.value;
     setSearchWord(searchWord);
-    const newFilter = await userData.filter((value) => {
-      return value.username.toLowerCase().includes(searchWord.toLowerCase());
-    });
-    newFilter && setFilteredData(newFilter);
+    // const newFilter = await userData.filter((value) => {
+    //   return value.username.toLowerCase().includes(searchWord.toLowerCase());
+    // });
+    // newFilter && setFilteredData(newFilter);
+    debouncedSave(searchWord,userData)
   };
 
   return (
@@ -61,13 +76,8 @@ export default function NavBar() {
         ) : (
           <DarkModeOutlinedIcon onClick={toggle} />
         )}
-        <GridViewOutlinedIcon />
-        {/* <div className="search">
-          <SearchOutlinedIcon />
-          <input type="text" placeholder='Search...' />
 
-        </div> */}
-        <div className="search rounded-full ">
+        <div className="search rounded-full ml-36">
           <SearchOutlinedIcon />
           <input
             type="text"
@@ -101,7 +111,7 @@ export default function NavBar() {
                   ))
                 ) : (
                   <li className="p-3 hover:bg-gray-300 border-b rounded-b-lg border-gray-200">
-                    No results found
+                    No Results Found
                   </li>
                 )}
               </ul>
@@ -110,11 +120,17 @@ export default function NavBar() {
         </div>
       </div>
       <div className="right">
-        <PersonOutlineOutlinedIcon />
+        <Link
+          to={`/profile/${currentUser._id}`}
+          style={{ textDecoration: "none" }}
+        >
+          <PersonOutlineOutlinedIcon />
+        </Link>
+
         <Link to="/messenger" style={{ textDecoration: "none" }}>
           <EmailOutlinedIcon />
         </Link>
-        <NotificationsOffOutlinedIcon />
+
         {/* <div className="user">
           <img
             src={currentUser.profilePicture}
