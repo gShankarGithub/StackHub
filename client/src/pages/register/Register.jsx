@@ -76,7 +76,7 @@ function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(`http://localhost:8800/api/auth/register`, details ).then((response) => {
+      await axios.post(`https://api.socio-social.ml/api/auth/register`, details ).then((response) => {
         console.log('signup success', response);
         navigate('/login')
       }).catch((err) => {
