@@ -38,7 +38,7 @@ app.use(
       'https://www.socio-social.ml',
       'http://www.socio-social.ml',
       'https://socio-social.ml',
-      'http://socio-social.ml'
+      'http://socio-social.ml',
     ],
   })
 );
